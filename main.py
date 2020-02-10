@@ -22,29 +22,32 @@ for folderout in range(1, 2):
 
     def imhist(img):
         global max_x
-        my_list = []
         hist = np.zeros(256)
         for i in range(0, img.shape[0]):#x 
             max_x = max(img[i])
-            # curr_array = img[i]
-            # curr_item = curr_array[8].index
+
             for j in range(0, img.shape[1]):#y
                 hist[img[i,j]]+=1
-            #print(my_list)
-            
-
-        #print(max_x)
-        #print(curr_item)
-        # print(curr[8])
-        # print(prev)
-
-        # print("this is i",i)
-        # print("this is j",j)
         return hist
+    my_list=[]
+    def erosion(img,tresh):
+        global my_list
+        for i in range(0, img.shape[0]):
+            for j in range(0, img.shape[1]):
+                my_list.append(img[i,j])
+        for index , val in enumerate(my_list):
+            if val in my_list[index] < tresh:
+                val = 0# throws error TypeError: argument of type 'numpy.uint8' is not iterable
+            #print(my_list[index])
+        return img
+
 
     hist = imhist(img)
+
+    #eros = erosion
     plt.plot(hist)
-   # plt.show()
+    erosion(img,50)
+    #plt.show()
     before = time.time()
     #manual threshold
     img = threshold(img,max_x-50)

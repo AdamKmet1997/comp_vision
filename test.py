@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 
 #read in an image into memory
-img = cv.imread('c:/users/simon/Pictures/cameraman.png',0)
+img = cv.imread('Oring1.jpg',0)
 copy = img.copy()
 
 def threshold(img,thresh):
@@ -29,7 +29,7 @@ plt.plot(hist)
 plt.show()
 before = time.time()
 #manual threshold
-img = threshold(img,50)
+img = threshold(img,100)
 #opencv threshold
 #t,img = cv.threshold(img,50,255,cv.THRESH_BINARY)
 after = time.time()
