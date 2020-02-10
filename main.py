@@ -9,7 +9,7 @@ for folderout in range(1, 2):
     copy = img.copy()
     max_x = 0
     #print(folderout)
-
+         
     def threshold(img,thresh):
         #implement thresholding ourselves using loops (soooo slow in python)
         for i in range(0, img.shape[0]):
@@ -18,6 +18,7 @@ for folderout in range(1, 2):
                     img[i,j] = 255
                 else:
                     img[i,j] = 0
+
         return img
 
     def imhist(img):
@@ -25,44 +26,38 @@ for folderout in range(1, 2):
         hist = np.zeros(256)
         for i in range(0, img.shape[0]):#x 
             max_x = max(img[i])
-
             for j in range(0, img.shape[1]):#y
                 hist[img[i,j]]+=1
         return hist
-    my_list=[]
-    def erosion(img,tresh):
-        global my_list
-        for i in range(0, img.shape[0]):
-            for j in range(0, img.shape[1]):
-                my_list.append(img[i,j])
-        for index , val in enumerate(my_list):
-            if val in my_list[index] < tresh:
-                val = 0# throws error TypeError: argument of type 'numpy.uint8' is not iterable
-            #print(my_list[index])
+
+    def dilation(img):
+        global max_x
+        thresh = max_x -50
+        hist = np.zeros(256)
+        for i in range(0, img.shape[0]):#x 
+            for j in range(0, img.shape[1]):#y
+        # find if any of i-1, i+1, j-1, j+1 are 0
+                if img[i,j] == 255 and img[i - 1, j] >= 0 :
+                    img[i,j]= 0
+                    #print("found some ")
+                # if i == 255:
+                #     if img[i - 1, j] == 0 or img[i + 1, j] == 0 or img[i, j-1] == 0 or img[i, j+1] == 0:
+                #         img[i,j] = 0
+                # if j == 255:
+                #     if img[i - 1, j] == 0 or img[i + 1, j] == 0 or img[i, j-1] == 0 or img[i, j+1] == 0:
+                #         img[i,j] = 0
         return img
 
-
     hist = imhist(img)
-
-    #eros = erosion
+    img = threshold(img,max_x-50)#this makes everything either 0 or 255
+    img =dilation(img)
+    hist = imhist(img)
     plt.plot(hist)
-    erosion(img,50)
-    #plt.show()
-    before = time.time()
-    #manual threshold
-    img = threshold(img,max_x-50)
-    #opencv threshold
-    #t,img = cv.threshold(img,50,255,cv.THRESH_BINARY)
-    after = time.time()
-    print("Time taken to process hand coded thresholding: " + str(after-before))
-    #cv.imshow('thresholded image 1',img)
+    plt.show()
+    print("max x axis value is = ",max_x)
+
+
+
+    cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
     cv.destroyAllWindows()
-
-    # smallest = img.min(axis=0).min(axis=0)
-    # biggest = img.max(axis=0).max(axis=0)
-    # print(smallest)
-
-    # hist_max = cv.calcHist([img], [0], None, [256], [0, 256])
-    # hist_max = [val[0] for val in hist] 
-    #n, bins, patches = ax.hist(<your data>, bins=<num of bins>, normed=True, fc='k', alpha=0.3)
