@@ -48,13 +48,11 @@ for folderout in range(1, 2):
                     for x in range(-1,2):
                         for y in range(-1,2):
                             if structure[x+1][y+1] == 1:
-                                if new_copy[i +x][j + y] ==255:
-                                    new_copy[i + x][j + y] =0
-
-                                # if  x != 0 and y != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
-                                #     if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==0:
-                                    #new_copy[i,j]=0
-
+                                if  x != 0 and y != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
+                                    if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
+                                        new_copy[i + x][j + y] =0
+                #if new_copy[i +x][j + y] ==255:
+                # new_copy[i + x][j + y] =0
                 # if img[i,j] == 255 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
                 #     if img[i - 1, j] == 0 or img[i + 1, j] == 0 or img[i, j-1] == 0 or img[i, j+1] == 0 or img[i -1, j-1] == 0 or img[i -1 , j+1] == 0 or img[i + 1, j-1] == 0 or img[i + 1, j+1] == 0:
                 #         new_copy[i,j] = 0
