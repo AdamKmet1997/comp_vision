@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 
 #read in an image into memory
-for folderout in range(1, 2):
+for folderout in range(8, 9):
     img = cv.imread('Oring'+str(folderout)+'.jpg',0)
     copy = img.copy()
     max_x = 0
@@ -34,6 +34,23 @@ for folderout in range(1, 2):
     #             [1, 1, 1],
     #             [1, 1, 1]]
 
+    def erosion(img):
+        structure =[[1, 1, 1],
+                    [1, 1, 1],
+                    [1, 1, 1]]
+        new_copy = img.copy()
+        global max_x
+        thresh = max_x -50
+        hist = np.zeros(256)
+        for i in range(0, img.shape[0]):#x 
+            for j in range(0, img.shape[1]):#y
+        # find if any of i-1, i+1, j-1, j+1 are 0
+                if img[i,j] == 0 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
+                    if img[i - 1, j] == 255 or img[i + 1, j] == 255 or img[i, j-1] == 255 or img[i, j+1] == 255 or img[i -1, j-1] == 255 or img[i -1 , j+1] == 255 or img[i + 1, j-1] == 255 or img[i + 1, j+1] == 255:
+                        new_copy[i,j] = 255
+        print(img)
+        return new_copy
+
     def dilation(img):
         structure =[[1, 1, 1],
                     [1, 0, 1],
@@ -51,6 +68,60 @@ for folderout in range(1, 2):
                                 if  x != 0 and y != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
                                     if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
                                         new_copy[i + x][j + y] =0
+        return new_copy
+
+    def closing(img):
+        dil = dilation(img)
+        ero = erosion(dil)
+        return ero
+
+    def label(img):
+        counter = 1
+        my_list = []
+        # structure =[[ ,0, ],
+        #             [0,0,0],
+        #             [ ,0, ]]
+        new_copy = img.copy()
+        for i in range(0, img.shape[0]):#x 
+            for j in range(0, img.shape[1]):#y
+                if i + 1 < img.shape[0] and j + 1 < img.shape[1]:
+                    if img[i,j] == 0:#curr pix
+                        counter = 1#if black make it 1
+                        if img[i - 1 ,j] == 0  or img[i, j-1] == 0 and counter == 1:#check one before and above
+                            new_copy[i,j] = counter#assign counter to the ones that are black
+                            my_list.append(new_copy[i,j])#add to list
+                        if img[i - 1 ,j] ==255  or img[i, j-1] ==255 :#if one before and one above is white
+                                counter +=1# incrememnt couinter
+                                new_copy[i,j] = counter
+                                my_list.append(new_copy[i,j])
+
+                               
+        print(my_list)
+                        
+                                
+                              
+
+    hist = imhist(img) 
+    img = threshold(img,max_x-50)#this makes everything either 0 or 255
+    #img = dilation(img)
+    # img =erosion(img)
+    # img =erosion(img)
+    # img =erosion(img)
+
+    img = closing(img)
+    label(img)
+    hist = imhist(img)
+    plt.plot(hist)
+    #plt.show()
+    print("max x axis value is = ",max_x)
+
+
+
+    cv.imshow('thresholded image 1',img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+
                 #if new_copy[i +x][j + y] ==255:
                 # new_copy[i + x][j + y] =0
                 # if img[i,j] == 255 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
@@ -64,43 +135,3 @@ for folderout in range(1, 2):
         #if structure x +1 and y+1 is 1
         #if if structure i +1 and j+1 is 1
         #assign 255 to the img[i+1][j+1]==255
-        return new_copy
-
-    def erosion(img):
-        new_copy = img.copy()
-        global max_x
-        thresh = max_x -50
-        hist = np.zeros(256)
-        for i in range(0, img.shape[0]):#x 
-            for j in range(0, img.shape[1]):#y
-        # find if any of i-1, i+1, j-1, j+1 are 0
-                if img[i,j] == 0 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
-                    if img[i - 1, j] == 255 or img[i + 1, j] == 255 or img[i, j-1] == 255 or img[i, j+1] == 255 or img[i -1, j-1] == 255 or img[i -1 , j+1] == 255 or img[i + 1, j-1] == 255 or img[i + 1, j+1] == 255:
-                        new_copy[i,j] = 255
-        #print(img)
-        return new_copy
-
-    def closing(img):
-        dil = dilation(img)
-        ero = erosion(dil)
-        return ero
-
-    
-
-
-    hist = imhist(img) 
-    img = threshold(img,max_x-50)#this makes everything either 0 or 255
-    img = dilation(img)
-    # img =erosion(img)
-    #img = closing(img)
-
-    hist = imhist(img)
-    plt.plot(hist)
-    #plt.show()
-    print("max x axis value is = ",max_x)
-
-
-
-    cv.imshow('thresholded image 1',img)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
