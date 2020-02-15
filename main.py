@@ -15,9 +15,9 @@ for folderout in range(1, 2):
         for i in range(0, img.shape[0]):
             for j in range(0, img.shape[1]):
                 if img[i,j] > thresh:
-                    img[i,j] = 255
+                    img[i,j] = 255#white
                 else:
-                    img[i,j] = 0
+                    img[i,j] = 0#black
 
         return img
 
@@ -30,34 +30,37 @@ for folderout in range(1, 2):
                 hist[img[i,j]]+=1
         return hist
     
-    structure =[[1, 1, 1],
-                [1, 0, 1],
-                [1, 1, 1]]
+    # structure =[[1, 1, 1],
+    #             [1, 1, 1],
+    #             [1, 1, 1]]
 
     def dilation(img):
+        structure =[[1, 1, 1],
+                    [1, 0, 1],
+                    [1, 1, 1]]
         new_copy = img.copy()
         global max_x
         thresh = max_x -50
         hist = np.zeros(256)
         for i in range(0, img.shape[0]):#x 
             for j in range(0, img.shape[1]):#y
-        # find if any of i-1, i+1, j-1, j+1 are 0
-                if img[i,j] == 0:
+                if img[i,j] == 0:#if its black
                     for x in range(-1,2):
                         for y in range(-1,2):
                             if structure[x+1][y+1] == 1:
-                                if  y != 0 and x != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
-                                    #if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==0:
-                                    # if img[i+x][j+y] == 255:
+                                if new_copy[i +x][j + y] ==255:
+                                    new_copy[i + x][j + y] =0
 
-                                    new_copy[i,j]=0
+                                # if  x != 0 and y != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
+                                #     if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==0:
+                                    #new_copy[i,j]=0
 
                 # if img[i,j] == 255 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
                 #     if img[i - 1, j] == 0 or img[i + 1, j] == 0 or img[i, j-1] == 0 or img[i, j+1] == 0 or img[i -1, j-1] == 0 or img[i -1 , j+1] == 0 or img[i + 1, j-1] == 0 or img[i + 1, j+1] == 0:
                 #         new_copy[i,j] = 0
         #print(img)
 
-        #if img[ i, j ] is 25 black
+        #if img[ i, j ] is 255 black
         #loop through structure - 1 to 2 for x here
         #same for y
         #if structure x +1 and y+1 is 1
