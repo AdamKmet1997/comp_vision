@@ -86,14 +86,15 @@ for folderout in range(8, 9):
             for j in range(0, img.shape[1]):#y
                 if i + 1 < img.shape[0] and j + 1 < img.shape[1]:
                     if img[i,j] == 0:#curr pix
-                        counter = 1#if black make it 1
-                        if img[i - 1 ,j] == 0  or img[i, j-1] == 0 and counter == 1:#check one before and above
+                        #counter += 1#if black make it 1
+                        if img[i - 1 ,j] == 0  or img[i, j-1] == 0:#check one before and above
+                            counter = 1
                             new_copy[i,j] = counter#assign counter to the ones that are black
                             my_list.append(new_copy[i,j])#add to list
-                        if img[i - 1 ,j] ==255  or img[i, j-1] ==255 :#if one before and one above is white
-                                counter +=1# incrememnt couinter
-                                new_copy[i,j] = counter
-                                my_list.append(new_copy[i,j])
+                            if img[i - 1 ,j] ==255  or img[i, j-1] ==255 :#if one before and one above is white
+                                    counter +=1# incrememnt couinter
+                                    new_copy[i,j] = counter
+                                    my_list.append(new_copy[i,j])
 
                                
         print(my_list)
