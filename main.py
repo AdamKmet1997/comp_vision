@@ -45,13 +45,9 @@ for folderout in range(1, 2):
                 if img[i,j] == 0:
                     for x in range(-1,2):
                         for y in range(-1,2):
-                            if structure[x+1][y+1] == 1:
-                                if  y != 0 and x != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
-                                    #if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==0:
-                                    # if img[i+x][j+y] == 255:
-
-                                    new_copy[i,j]=0
-
+                                 if  x != 0 and y != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
+                                    if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
+                                        new_copy[i + x][j + y] =0
                 # if img[i,j] == 255 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
                 #     if img[i - 1, j] == 0 or img[i + 1, j] == 0 or img[i, j-1] == 0 or img[i, j+1] == 0 or img[i -1, j-1] == 0 or img[i -1 , j+1] == 0 or img[i + 1, j-1] == 0 or img[i + 1, j+1] == 0:
                 #         new_copy[i,j] = 0
@@ -84,14 +80,45 @@ for folderout in range(1, 2):
         ero = erosion(dil)
         return ero
 
-    
+    def labeling(img):
+        li = [[ 0 for i in range(0, img.shape[0])] for j in range(0, img.shape[1])]
+        counter = 1
+        for i in range(0, img.shape[0]):
+            for j in range(0, img.shape[1]):
+                if img[i,j] == 0 and li[i][j] == 0:#if  curr pix is black
+                    li[i][j] = counter
+                    queue = []
+                    queue.append([i,j])#added curr pixel to the queue
+                    #
+                    while len(queue)>0:
+                        pixel = queue.pop(0)
+                        #print(img[pixel[0] -1,pixel[1]])
+                        if img[pixel[0] -1,pixel[1]]==0 and li[pixel[0] -1][pixel[1]]==0:
+                            queue.append([pixel[0] -1 , pixel[1]])
+                            li[pixel[0] -1 ][ pixel[1]] = counter
+                        if img[pixel[0] +1 , pixel[1]]==0 and li[pixel[0] +1 ][ pixel[1 ]]==0:
+                            queue.append([pixel[0] +1 , pixel[1]])
+                            li[pixel[0] +1 ][ pixel[1 ]] = counter
+                        if img[pixel[0] , pixel[1] -1]==0 and li[pixel[0] -1 ][ pixel[1 ]-1]==0:
+                            queue.append([pixel[0] , pixel[1]-1])
+                            li[pixel[0] ][ pixel[1 ]-1] = counter
+                        if img[pixel[0], pixel[1]+1]==0 and li[pixel[0] ][ pixel[1 ]+1]==0:
+                            queue.append([pixel[0], pixel[1]+1])
+                            li[pixel[0] ][ pixel[1 ]+1] = counter  
+                    counter +=1
+            	        
+        return li
 
 
     hist = imhist(img) 
     img = threshold(img,max_x-50)#this makes everything either 0 or 255
-    img = dilation(img)
+    #img = dilation(img)
+    # img = labeling(img)
     # img =erosion(img)
-    #img = closing(img)
+    img = closing(img)
+    labels = labeling(img)
+    #labeling(img)
+
 
     hist = imhist(img)
     plt.plot(hist)
@@ -103,3 +130,17 @@ for folderout in range(1, 2):
     cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
     cv.destroyAllWindows()
+
+
+############# labeling algorithm#################
+                    #pop the curr from queue
+                    #check neighbours of that index  i-1  and j == 0
+                    # ..i+1,j...i,j-1..i,j+1
+                #counter += 1
+            #return li
+#################################################
+
+### center
+## get average i
+# get average j
+#  
