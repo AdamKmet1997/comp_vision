@@ -106,7 +106,7 @@ for folderout in range(1, 2):
                             queue.append([pixel[0], pixel[1]+1])
                             li[pixel[0] ][ pixel[1 ]+1] = counter  
                     counter +=1
-            	        
+            	        ## pushed here 
         return li
 
 
