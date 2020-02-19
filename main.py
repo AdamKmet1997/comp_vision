@@ -109,23 +109,68 @@ for folderout in range(1, 2):
             	        ## pushed here 
         return li
 
+    def painting (img):
+        new_copy = img.copy()
+        labels = labeling(img)
+        for i in range(0, img.shape[0]):
+            for j in range(0, img.shape[1]):
+                if labels[i][j] == 1:#if  curr pix is black  and labels is 1 
+                    new_copy[i,j] = 0
+                    #bellow if statemnt is not really needed
+                    #but kept it here to show that im labeling different pieces
+                # if labels[i][j] == 2:#if  curr pix is black and label is 2
+                #     new_copy[i,j] = 100
+                if labels[i][j] > 1 :
+                    new_copy[i,j] =255
+                else:
+                    pass
+        return new_copy
+
+    def center_point(img):
+        counter = 0
+        total_x = 0
+        total_y = 0
+        for i in range(0, img.shape[0]):
+            for j in range(0, img.shape[1]):
+                if img[i,j] == 0:
+                    counter +=1
+
+                    total_x += i
+                    total_y += j
+        average_x = total_x / counter
+        average_y = total_y / counter
+        center = img[int(average_x),int(average_y)]
+        img[int(average_x),int(average_y)] = 0
+        img[int(average_x - 1 ),int(average_y )] = 0
+        img[int(average_x + 1 ),int(average_y)] = 0
+        img[int(average_x - 1 ),int(average_y - 1 )] = 0
+        img[int(average_x + 1 ),int(average_y + 1)] = 0
+        img[int(average_x ),int(average_y - 1 )] = 0
+        img[int(average_x),int(average_y + 1)] = 0
+
+        img[int(average_x - 2 ),int(average_y )] = 0
+        img[int(average_x + 2 ),int(average_y)] = 0
+        img[int(average_x - 2 ),int(average_y - 2 )] = 0
+        img[int(average_x + 2 ),int(average_y + 2)] = 0
+        img[int(average_x ),int(average_y - 2 )] = 0
+        img[int(average_x),int(average_y + 2)] = 0
+
+        return img
+
 
     hist = imhist(img) 
     img = threshold(img,max_x-50)#this makes everything either 0 or 255
-    #img = dilation(img)
-    # img = labeling(img)
-    # img =erosion(img)
-    img = closing(img)
-    labels = labeling(img)
-    #labeling(img)
 
+    img = closing(img)
+    #labels = labeling(img)
+    img = painting(img)
 
     hist = imhist(img)
     plt.plot(hist)
     #plt.show()
     print("max x axis value is = ",max_x)
-
-
+    #painting(img)
+    img = center_point(img)
 
     cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
