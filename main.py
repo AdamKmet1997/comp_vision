@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 
 #read in an image into memory
-for folderout in range(1, 2):
+for folderout in range(8, 9):
     img = cv.imread('Oring'+str(folderout)+'.jpg',0)
     copy = img.copy()
     max_x = 0
@@ -121,7 +121,7 @@ for folderout in range(1, 2):
                 # if labels[i][j] == 2:#if  curr pix is black and label is 2
                 #     new_copy[i,j] = 100
                 if labels[i][j] > 1 :
-                    new_copy[i,j] =255
+                    new_copy[i,j] =150
                 else:
                     pass
         return new_copy
@@ -157,6 +157,44 @@ for folderout in range(1, 2):
 
         return img
 
+    def square(img):
+        smallest_i = -1
+        biggest_i = -1
+        smallest_j = -1
+        biggest_j = -1      
+        for i in range(0, img.shape[0]):#x
+                for j in range(0, img.shape[1]):#y
+                    if img[i][j] == 0:
+                        if smallest_i == -1:
+                            smallest_i = i
+                            biggest_i = i
+                            smallest_j = j
+                            biggest_j = j
+
+                        elif smallest_i > i:
+                            smallest_i = i
+
+                        elif biggest_i < i:
+                            biggest_i = i
+
+                        elif smallest_j > j:
+                            smallest_j = j
+                        
+                        elif biggest_j < j:
+                            biggest_j = j
+                            
+        #for x in range(smallest_j,biggest_j):
+        #    img[smallest_i,x] = 0
+        #    img[biggest_i,x ] = 0
+        
+        img[smallest_i,smallest_j:biggest_j]=0
+        img[biggest_i,smallest_j:biggest_j]=0
+            
+        for y in range(smallest_i,biggest_i):
+            img[y,smallest_j] = 0
+            img[y,biggest_j] = 0
+
+        return img
 
     hist = imhist(img) 
     img = threshold(img,max_x-50)#this makes everything either 0 or 255
@@ -171,7 +209,7 @@ for folderout in range(1, 2):
     print("max x axis value is = ",max_x)
     #painting(img)
     img = center_point(img)
-
+    img = square(img)
     cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
     cv.destroyAllWindows()
