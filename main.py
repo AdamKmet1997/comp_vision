@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 
 #read in an image into memory
-for folderout in range(8, 9):
+for folderout in range(8 , 9):
     img = cv.imread('Oring'+str(folderout)+'.jpg',0)
     copy = img.copy()
     max_x = 0
@@ -139,25 +139,42 @@ for folderout in range(8, 9):
                     total_y += j
         average_x = total_x / counter
         average_y = total_y / counter
-        center = img[int(average_x),int(average_y)]
-        img[int(average_x),int(average_y)] = 0
-        img[int(average_x - 1 ),int(average_y )] = 0
-        img[int(average_x + 1 ),int(average_y)] = 0
-        img[int(average_x - 1 ),int(average_y - 1 )] = 0
-        img[int(average_x + 1 ),int(average_y + 1)] = 0
-        img[int(average_x ),int(average_y - 1 )] = 0
-        img[int(average_x),int(average_y + 1)] = 0
+        center = [int(average_x),int(average_y)]
+        print(center[0], center[1])
 
-        img[int(average_x - 2 ),int(average_y )] = 0
-        img[int(average_x + 2 ),int(average_y)] = 0
-        img[int(average_x - 2 ),int(average_y - 2 )] = 0
-        img[int(average_x + 2 ),int(average_y + 2)] = 0
-        img[int(average_x ),int(average_y - 2 )] = 0
-        img[int(average_x),int(average_y + 2)] = 0
+
+        # img[int(average_x),int(average_y)] = 0
+        # img[int(average_x - 1 ),int(average_y )] = 0
+        # img[int(average_x + 1 ),int(average_y)] = 0
+        # img[int(average_x - 1 ),int(average_y - 1 )] = 0
+        # img[int(average_x + 1 ),int(average_y + 1)] = 0
+        # img[int(average_x ),int(average_y - 1 )] = 0
+        # img[int(average_x),int(average_y + 1)] = 0
+
+        # img[int(average_x - 2 ),int(average_y )] = 0
+        # img[int(average_x + 2 ),int(average_y)] = 0
+        # img[int(average_x - 2 ),int(average_y - 2 )] = 0
+        # img[int(average_x + 2 ),int(average_y + 2)] = 0
+        # img[int(average_x ),int(average_y - 2 )] = 0
+        # img[int(average_x),int(average_y + 2)] = 0
 
         return img
-
+        
     def square(img):
+        counter = 0
+        total_x = 0
+        total_y = 0
+        for i in range(0, img.shape[0]):
+            for j in range(0, img.shape[1]):
+                if img[i,j] == 0:
+                    counter +=1
+
+                    total_x += i
+                    total_y += j
+        average_x = total_x / counter
+        average_y = total_y / counter
+        center = [int(average_x),int(average_y)]
+
         smallest_i = -1
         biggest_i = -1
         smallest_j = -1
@@ -182,7 +199,20 @@ for folderout in range(8, 9):
                         
                         elif biggest_j < j:
                             biggest_j = j
-                            
+                             
+        top = biggest_j - average_y
+        bottom = smallest_j - average_y
+        left = smallest_i - average_x
+        right = biggest_i - average_x
+        average_radius = (top + abs(bottom) + abs(left) + right) /4
+
+        print(top)
+        print(abs(bottom))
+        print(abs(left))
+        print(right)
+        print(average_radius)
+        
+        #print("top_radius is ",img[center,top_radius])                 
         #for x in range(smallest_j,biggest_j):
         #    img[smallest_i,x] = 0
         #    img[biggest_i,x ] = 0
@@ -207,23 +237,9 @@ for folderout in range(8, 9):
     plt.plot(hist)
     #plt.show()
     print("max x axis value is = ",max_x)
-    #painting(img)
     img = center_point(img)
     img = square(img)
     cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
     cv.destroyAllWindows()
-
-
-############# labeling algorithm#################
-                    #pop the curr from queue
-                    #check neighbours of that index  i-1  and j == 0
-                    # ..i+1,j...i,j-1..i,j+1
-                #counter += 1
-            #return li
-#################################################
-
-### center
-## get average i
-# get average j
-#  
+  
