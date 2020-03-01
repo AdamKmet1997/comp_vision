@@ -252,12 +252,6 @@ for folderout in range(6,7):
                     if img[x,y] !=0 and new_copy[x,y] == 100:
                         if img[x-al,y] != 0 and img[x+al,y] != 0 and img[x,y-al] != 0 and img[x,y+al] != 0:
                             answer = False
-                        # if img[x-1,y] != 0 and img[x+al,y] != 0 and img[x,y-1] != 0 and img[x,y+1] != 0:
-                        #     answer = False
-                        # if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-al] != 0 and img[x,y+1] != 0:
-                        #     answer = False
-                        # if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-1] != 0 and img[x,y+al] != 0:
-                        #     answer = False
                        
         print(answer)
 
