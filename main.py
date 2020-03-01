@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 
 #read in an image into memory
-for folderout in range(8 , 9):
+for folderout in range(6,7):
     img = cv.imread('Oring'+str(folderout)+'.jpg',0)
     copy = img.copy()
     max_x = 0
@@ -140,7 +140,7 @@ for folderout in range(8 , 9):
         average_x = total_x / counter
         average_y = total_y / counter
         center = [int(average_x),int(average_y)]
-        print(center[0], center[1])
+        
 
 
         # img[int(average_x),int(average_y)] = 0
@@ -161,6 +161,9 @@ for folderout in range(8 , 9):
         return img
         
     def square(img):
+        new_copy = img.copy()
+        
+        #new_label = []
         counter = 0
         total_x = 0
         total_y = 0
@@ -199,18 +202,76 @@ for folderout in range(8 , 9):
                         
                         elif biggest_j < j:
                             biggest_j = j
-                             
+                     
+                   
         top = biggest_j - average_y
         bottom = smallest_j - average_y
         left = smallest_i - average_x
         right = biggest_i - average_x
-        average_radius = (top + abs(bottom) + abs(left) + right) /4
+        average_outer_radius = (top + abs(bottom) + abs(left) + right) /4 #this is the outter radius
+        #nneed to do inner radius 
+        #go from center point up and if you hit black pixel then your on radius
+        # print(center[0], center[1]) this gives me the center point of the circle
+        # img[center[0],center[1]] = 0
+        #(x -a )sqrt + (y - b)sqrt = r sqrt
+        #a and b = center point
+        # new_label = [[ 0 for i in range(0, img.shape[0])] for j in range(0, img.shape[1])]
+        # labels = labeling(img)## list of labels from labeling
+                     
+        # #print(labels)
+        # if new_label == labels:#compare of labeling list is same as new lables
+        #     print("TRUE")
+        # else:
+        #     print("FALSE")
+        small_radius=0
+        for y in range(center[1],len(img)):
+            if img[center[0],y] != 0:
+                small_radius +=1
+            else:
+                break
+        #print(small_radius,"...." ,average_outer_radius)
+        # distance = average_outer_radius - small_radius
+        # print(distance)
 
-        print(top)
-        print(abs(bottom))
-        print(abs(left))
-        print(right)
-        print(average_radius)
+        
+
+        #print(small_radius)
+        for x in range(0, img.shape[0]):#x
+            for y in range(0, img.shape[1]):#y
+                if ((x - center[0])**2) + ((y - center[1])**2  ) <= average_outer_radius **2 and not ((x - center[0])**2) + ((y - center[1])**2  ) <= small_radius **2:
+                    
+                    new_copy[x,y] = 100
+                    # new_label[int(x)][int(y)] = 1#if in the range of radius change to 1
+                else:
+                    new_copy[x,y] = 0
+                    #new_label[int(x)][int(y)] = 0#if outside change to 0   
+        answer = True
+        for x in range(0, img.shape[0]):#x
+            for y in range(0, img.shape[1]):#y
+                for al in range(1,6):
+                    if img[x,y] !=0 and new_copy[x,y] == 100:
+                        if img[x-al,y] != 0 and img[x+al,y] != 0 and img[x,y-al] != 0 and img[x,y+al] != 0:
+                            answer = False
+                        # if img[x-1,y] != 0 and img[x+al,y] != 0 and img[x,y-1] != 0 and img[x,y+1] != 0:
+                        #     answer = False
+                        # if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-al] != 0 and img[x,y+1] != 0:
+                        #     answer = False
+                        # if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-1] != 0 and img[x,y+al] != 0:
+                        #     answer = False
+                       
+        print(answer)
+
+        
+
+                    
+            
+
+
+        # print(top)
+        # print(abs(bottom))
+        # print(abs(left))
+        # print(right)
+        # print(average_radius)
         
         #print("top_radius is ",img[center,top_radius])                 
         #for x in range(smallest_j,biggest_j):
@@ -225,6 +286,10 @@ for folderout in range(8 , 9):
             img[y,biggest_j] = 0
 
         return img
+
+    #def checker(img):
+    #(x -a )sqrt + (y - b)sqrt = r sqrt
+    #a and b = center point
 
     hist = imhist(img) 
     img = threshold(img,max_x-50)#this makes everything either 0 or 255
