@@ -143,20 +143,20 @@ for folderout in range(1,16  ):
         
 
 
-        img[int(average_x),int(average_y)] = 0
-        img[int(average_x - 1 ),int(average_y )] = 0
-        img[int(average_x + 1 ),int(average_y)] = 0
-        img[int(average_x - 1 ),int(average_y - 1 )] = 0
-        img[int(average_x + 1 ),int(average_y + 1)] = 0
-        img[int(average_x ),int(average_y - 1 )] = 0
-        img[int(average_x),int(average_y + 1)] = 0
+        # img[int(average_x),int(average_y)] = 0
+        # img[int(average_x - 1 ),int(average_y )] = 0
+        # img[int(average_x + 1 ),int(average_y)] = 0
+        # img[int(average_x - 1 ),int(average_y - 1 )] = 0
+        # img[int(average_x + 1 ),int(average_y + 1)] = 0
+        # img[int(average_x ),int(average_y - 1 )] = 0
+        # img[int(average_x),int(average_y + 1)] = 0
 
-        img[int(average_x - 2 ),int(average_y )] = 0
-        img[int(average_x + 2 ),int(average_y)] = 0
-        img[int(average_x - 2 ),int(average_y - 2 )] = 0
-        img[int(average_x + 2 ),int(average_y + 2)] = 0
-        img[int(average_x ),int(average_y - 2 )] = 0
-        img[int(average_x),int(average_y + 2)] = 0
+        # img[int(average_x - 2 ),int(average_y )] = 0
+        # img[int(average_x + 2 ),int(average_y)] = 0
+        # img[int(average_x - 2 ),int(average_y - 2 )] = 0
+        # img[int(average_x + 2 ),int(average_y + 2)] = 0
+        # img[int(average_x ),int(average_y - 2 )] = 0
+        # img[int(average_x),int(average_y + 2)] = 0
 
         return img
         
@@ -248,11 +248,11 @@ for folderout in range(1,16  ):
         answer = True
         for x in range(0, img.shape[0]):#x
             for y in range(0, img.shape[1]):#y
-                    if img[x,y] !=0 and new_copy[x,y] == 100:
-                        if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-1] != 0 and img[x,y+1] != 0:
-                            if img[x-2,y] != 0 and img[x+2,y] != 0 and img[x,y-2] != 0 and img[x,y+2] != 0:
-                                if img[x,y] != 0 and img[x,y] != 0 and img[x,y] != 0 and img[x,y+3] != 0:
-                                    answer = False
+                if img[x,y] !=0 and new_copy[x,y] == 100:
+                    if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-1] != 0 and img[x,y+1] != 0:
+                        if img[x-2,y] != 0 and img[x+2,y] != 0 and img[x,y-2] != 0 and img[x,y+2] != 0:
+                            if img[x,y] != 0 and img[x,y] != 0 and img[x,y] != 0 and img[x,y+3] != 0:
+                                answer = False
                                 # if i check 2 neighbours then 14 is wrong 
                                 #if 3 neighbours then 2 are wrong with piece missing 
                        
@@ -304,4 +304,3 @@ for folderout in range(1,16  ):
     cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
     cv.destroyAllWindows()
-  
