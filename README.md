@@ -13,5 +13,5 @@ The use of opencv or any other library is not allowed and the programs has to be
 Bellow Image shows the image being tested with a square around it identifying the image
 And then the result saying False becasue its faulty and how long it took to process it 
 
-[image one ](exm/sc.png)
-[image two ](exm/sc2.png)
+![Image](exm/sc.png?raw=true "Title")
+![Result](exm/sc2.png?raw=true "Title")
