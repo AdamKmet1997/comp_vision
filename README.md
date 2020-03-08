@@ -1,4 +1,4 @@
-# Computer CVvision Project #
+# Computer Vision Project #
 
 #### Language: ####
 
