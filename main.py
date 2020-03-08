@@ -4,85 +4,74 @@ import time
 import matplotlib.pyplot as plt
 
 #read in an image into memory
-for folderout in range(1,16  ):
-    img = cv.imread('Oring'+str(folderout)+'.jpg',0)
+for folderout in range(1,16  ):# sets the range to 16 to open all the files 
+    img = cv.imread('Oring'+str(folderout)+'.jpg',0)# read in the files in order
     copy = img.copy()
     max_x = 0
-    #print(folderout)
          
     def threshold(img,thresh):
         #implement thresholding ourselves using loops (soooo slow in python)
-        for i in range(0, img.shape[0]):
-            for j in range(0, img.shape[1]):
-                if img[i,j] > thresh:
-                    img[i,j] = 255
+        for i in range(0, img.shape[0]):#loop through img x
+            for j in range(0, img.shape[1]):#loop through img y
+                if img[i,j] > thresh:#if the curr image pix is bigger than threshold 
+                    img[i,j] = 255# make it white 
                 else:
-                    img[i,j] = 0
+                    img[i,j] = 0# else make it black
 
         return img
-
+    #this method makes the histogram
     def imhist(img):
         global max_x
         hist = np.zeros(256)
         for i in range(0, img.shape[0]):#x 
-            max_x = max(img[i])
+            max_x = max(img[i])#loop through the pixels and get the max x value which is basically th biggest peak
             for j in range(0, img.shape[1]):#y
                 hist[img[i,j]]+=1
         return hist
     
-    structure =[[1, 1, 1],
+    structure =[[1, 1, 1],# im using this structure as an example of perfect structure 
                 [1, 0, 1],
                 [1, 1, 1]]
 
     def dilation(img):
-        new_copy = img.copy()
-        global max_x
-        thresh = max_x -50
+        new_copy = img.copy()# creates a copy of the image 
+        global max_x#imports the threshold 
+        thresh = max_x -50# minus 50 as it works perfect on all the examples 
         hist = np.zeros(256)
         for i in range(0, img.shape[0]):#x 
             for j in range(0, img.shape[1]):#y
         # find if any of i-1, i+1, j-1, j+1 are 0
-                if img[i,j] == 0:
-                    for x in range(-1,2):
-                        for y in range(-1,2):
+                if img[i,j] == 0:# if the pixel is black
+                    for x in range(-1,2):# looping through the structure x
+                        for y in range(-1,2):#looping through the structure y
+                            #checking all the neighbours of the image with the comparison of the with th structure
                                  if  x != 0 and y != 0 and i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
                                     if i + x >= 0 and i+ x < img.shape[0] and j + y >= 0 and j + y < img.shape[1] and  img[i+x][j+y]==255:
-                                        new_copy[i + x][j + y] =0
-                # if img[i,j] == 255 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
-                #     if img[i - 1, j] == 0 or img[i + 1, j] == 0 or img[i, j-1] == 0 or img[i, j+1] == 0 or img[i -1, j-1] == 0 or img[i -1 , j+1] == 0 or img[i + 1, j-1] == 0 or img[i + 1, j+1] == 0:
-                #         new_copy[i,j] = 0
-        #print(img)
-
-        #if img[ i, j ] is 25 black
-        #loop through structure - 1 to 2 for x here
-        #same for y
-        #if structure x +1 and y+1 is 1
-        #if if structure i +1 and j+1 is 1
-        #assign 255 to the img[i+1][j+1]==255
-        return new_copy
+                                        new_copy[i + x][j + y] =0# save the new information in the copy of the image 
+        return new_copy#returning the copy of the image and not image it self 
 
     def erosion(img):
-        new_copy = img.copy()
+        new_copy = img.copy()# makes a copy of image 
         global max_x
-        thresh = max_x -50
+        thresh = max_x -50# minus 50 as it works perfect on all the examples
         hist = np.zeros(256)
         for i in range(0, img.shape[0]):#x 
             for j in range(0, img.shape[1]):#y
-        # find if any of i-1, i+1, j-1, j+1 are 0
+                #checking all the neighbours of the pixel and checking for its values 
                 if img[i,j] == 0 and i - 1 >= 0 and i + 1 < img.shape[0] and j - 1 >= 0 and j + 1 < img.shape[1]:
                     if img[i - 1, j] == 255 or img[i + 1, j] == 255 or img[i, j-1] == 255 or img[i, j+1] == 255 or img[i -1, j-1] == 255 or img[i -1 , j+1] == 255 or img[i + 1, j-1] == 255 or img[i + 1, j+1] == 255:
                         new_copy[i,j] = 255
-        #print(img)
-        return new_copy
+        return new_copy#returning the copy of the image and not image it self 
 
+    #this method combines the dilation and erosion together
     def closing(img):
         dil = dilation(img)
         ero = erosion(dil)
-        return ero
+        return ero # retuns erosion because thats the last needed thing 
 
-    def labeling(img):
-        li = [[ 0 for i in range(0, img.shape[0])] for j in range(0, img.shape[1])]
-        counter = 1
+    def labeling(img):# here i put labels on the copy of the image array to find new areas 
+        li = [[ 0 for i in range(0, img.shape[0])] for j in range(0, img.shape[1])]# creeate a copy ith all vals = 0
+        counter = 1 # set counter start at 1
         for i in range(0, img.shape[0]):
             for j in range(0, img.shape[1]):
                 if img[i,j] == 0 and li[i][j] == 0:#if  curr pix is black
@@ -90,9 +79,11 @@ for folderout in range(1,16  ):
                     queue = []
                     queue.append([i,j])#added curr pixel to the queue
                     #
-                    while len(queue)>0:
+                    while len(queue)>0:# while the length is bigger than 0
                         pixel = queue.pop(0)
-                        #print(img[pixel[0] -1,pixel[1]])
+                        # following ifs check if neighbours around curr are black if yes add to queue to be checked next 
+                        #add it to the li as 1 if this is the first area im looking at with black pixel
+
                         if img[pixel[0] -1,pixel[1]]==0 and li[pixel[0] -1][pixel[1]]==0:
                             queue.append([pixel[0] -1 , pixel[1]])
                             li[pixel[0] -1 ][ pixel[1]] = counter
@@ -105,11 +96,10 @@ for folderout in range(1,16  ):
                         if img[pixel[0], pixel[1]+1]==0 and li[pixel[0] ][ pixel[1 ]+1]==0:
                             queue.append([pixel[0], pixel[1]+1])
                             li[pixel[0] ][ pixel[1 ]+1] = counter  
-                    counter +=1
-            	        ## pushed here 
-        return li
+                    counter +=1# else increment the counter and start now labeling as 2 and so on
+        return li# return the copy label list 
 
-    def painting (img):
+    def painting (img): #painting different aroeas in defferent colur to show difference 
         new_copy = img.copy()
         labels = labeling(img)
         for i in range(0, img.shape[0]):
@@ -125,42 +115,8 @@ for folderout in range(1,16  ):
                 else:
                     pass
         return new_copy
-
-    def center_point(img):
-        counter = 0
-        total_x = 0
-        total_y = 0
-        for i in range(0, img.shape[0]):
-            for j in range(0, img.shape[1]):
-                if img[i,j] == 0:
-                    counter +=1
-
-                    total_x += i
-                    total_y += j
-        average_x = total_x / counter
-        average_y = total_y / counter
-        center = [int(average_x),int(average_y)]
         
-
-
-        # img[int(average_x),int(average_y)] = 0
-        # img[int(average_x - 1 ),int(average_y )] = 0
-        # img[int(average_x + 1 ),int(average_y)] = 0
-        # img[int(average_x - 1 ),int(average_y - 1 )] = 0
-        # img[int(average_x + 1 ),int(average_y + 1)] = 0
-        # img[int(average_x ),int(average_y - 1 )] = 0
-        # img[int(average_x),int(average_y + 1)] = 0
-
-        # img[int(average_x - 2 ),int(average_y )] = 0
-        # img[int(average_x + 2 ),int(average_y)] = 0
-        # img[int(average_x - 2 ),int(average_y - 2 )] = 0
-        # img[int(average_x + 2 ),int(average_y + 2)] = 0
-        # img[int(average_x ),int(average_y - 2 )] = 0
-        # img[int(average_x),int(average_y + 2)] = 0
-
-        return img
-        
-    def square(img):
+    def square(img):# gettign square around the circle 
         new_copy = img.copy()
         
         #new_label = []
@@ -181,10 +137,11 @@ for folderout in range(1,16  ):
         smallest_i = -1
         biggest_i = -1
         smallest_j = -1
-        biggest_j = -1      
+        biggest_j = -1     
+        #following gets the   outter radius of the circle 
         for i in range(0, img.shape[0]):#x
                 for j in range(0, img.shape[1]):#y
-                    if img[i][j] == 0:
+                    if img[i][j] == 0:# on;y in circle 
                         if smallest_i == -1:
                             smallest_i = i
                             biggest_i = i
@@ -208,99 +165,59 @@ for folderout in range(1,16  ):
         bottom = smallest_j - average_y
         left = smallest_i - average_x
         right = biggest_i - average_x
+        #  get the 4 sides of the circle and get the average of them all and thats the outer pount 
         average_outer_radius = (top + abs(bottom) + abs(left) + right) /4 #this is the outter radius
-        #nneed to do inner radius 
-        #go from center point up and if you hit black pixel then your on radius
-        # print(center[0], center[1]) this gives me the center point of the circle
-        # img[center[0],center[1]] = 0
-        #(x -a )sqrt + (y - b)sqrt = r sqrt
-        #a and b = center point
-        # new_label = [[ 0 for i in range(0, img.shape[0])] for j in range(0, img.shape[1])]
-        # labels = labeling(img)## list of labels from labeling
-                     
-        # #print(labels)
-        # if new_label == labels:#compare of labeling list is same as new lables
-        #     print("TRUE")
-        # else:
-        #     print("FALSE")
+    
         small_radius=0
+        #to get inner start at the center and loop to any side until you hit black pixel thats inner radius 
         for y in range(center[1],len(img)):
             if img[center[0],y] != 0:
                 small_radius +=1
             else:
                 break
-        #print(small_radius,"...." ,average_outer_radius)
-        # distance = average_outer_radius - small_radius
-        # print(distance)
 
-        
-
-        #print(small_radius)
         for x in range(0, img.shape[0]):#x
             for y in range(0, img.shape[1]):#y
+                #using equation to check for perfect circle 
+                #(x - a)sqrt + (y = b)sqrt = r sqrt
+                #so if on outer but not on inner radius 
                 if ((x - center[0])**2) + ((y - center[1])**2  ) <= average_outer_radius **2 and not ((x - center[0])**2) + ((y - center[1])**2  ) <= small_radius **2:
-                    
                     new_copy[x,y] = 100
-                    # new_label[int(x)][int(y)] = 1#if in the range of radius change to 1
                 else:
                     new_copy[x,y] = 0
-                    #new_label[int(x)][int(y)] = 0#if outside change to 0   
         answer = True
+        # circles are not perfect so need to add some allowance to them so im checking 
+        #for next neighbour pixel if in the equation then i label s true 
+        #i can check few neighbours since errors are bigger than just one pixel
         for x in range(0, img.shape[0]):#x
             for y in range(0, img.shape[1]):#y
                 if img[x,y] !=0 and new_copy[x,y] == 100:
                     if img[x-1,y] != 0 and img[x+1,y] != 0 and img[x,y-1] != 0 and img[x,y+1] != 0:
                         if img[x-2,y] != 0 and img[x+2,y] != 0 and img[x,y-2] != 0 and img[x,y+2] != 0:
                             if img[x,y] != 0 and img[x,y] != 0 and img[x,y] != 0 and img[x,y+3] != 0:
-                                answer = False
-                                # if i check 2 neighbours then 14 is wrong 
-                                #if 3 neighbours then 2 are wrong with piece missing 
-                       
+                                answer = False                          
         print(answer)
-
-        
-
-                    
-            
-
-
-        # print(top)
-        # print(abs(bottom))
-        # print(abs(left))
-        # print(right)
-        # print(average_radius)
-        
-        #print("top_radius is ",img[center,top_radius])                 
-        #for x in range(smallest_j,biggest_j):
-        #    img[smallest_i,x] = 0
-        #    img[biggest_i,x ] = 0
-        
         img[smallest_i,smallest_j:biggest_j]=0
         img[biggest_i,smallest_j:biggest_j]=0
             
         for y in range(smallest_i,biggest_i):
             img[y,smallest_j] = 0
             img[y,biggest_j] = 0
-
         return img
-
-    #def checker(img):
-    #(x -a )sqrt + (y - b)sqrt = r sqrt
-    #a and b = center point
 
     hist = imhist(img) 
     img = threshold(img,max_x-50)#this makes everything either 0 or 255
+    before = time.time()
 
     img = closing(img)
-    #labels = labeling(img)
     img = painting(img)
-
     hist = imhist(img)
     plt.plot(hist)
-    #plt.show()
     print("max x axis value is = ",max_x)
-    img = center_point(img)
     img = square(img)
+    after = time.time()
+    print("Time taken to process hand coded thresholding: " + str(after-before))
+
     cv.imshow('thresholded image 1',img)
     cv.waitKey(0)
     cv.destroyAllWindows()
